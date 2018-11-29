@@ -1,14 +1,17 @@
-module immgen( 
-	input sel, 
-	input [15:0] data, 
-	output reg [31:0] out 
-);
+module immgen (sel, data, out);
+	input sel;
+	input [15:0] data;
+	output reg [31:0] out;
 
-	always @(data) begin
+	always @(sel, data)
+	begin
 		if (sel == 0)
-			out <= data;
+			begin
+				out <= data;
+			end
 		else
-			out <= $signed(data);			
+			begin
+				out <= $signed(data);			
+			end
 	end
-
 endmodule
