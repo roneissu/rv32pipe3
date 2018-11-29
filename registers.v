@@ -1,17 +1,27 @@
-module registers (
-	input clk,    // Clock
-	input writeEnable,
-	input [4:0] addr1,
-	input [4:0] addr2,
-	input [4:0] addrWrite,
-	input [31:0] dataWrite,
-	output [31:0] data1,
-	output [31:0] data2
-);
-
-	wire clk_wire;
+module registers (clk, wen, addr1, addr2, addrW, dataW, data1, data2);
+	input					clk, wen;
+	input 	[4:0] 	addr1, addr2, addrW;
+	input 	[31:0]	dataW;
+	output 	[31:0]	data1, data2;
 	
-	assign clk_wire = ~clk;
-	// lembrar de usar o negedge para o clock aqui
+	reg [31:0] regs [31:0];
+	reg [31:0] data1_wire, data2_wire;
+	
+	always @(negedge clk)
+	begin
+		if(wen == 1'b1)
+			begin
+				regs[addrW] = dataW;
+			end
+	end
+	
+	always @(posedge clk)
+	begin
+		data1_wire = regs[addr1];
+		data2_wire = regs[addr2];
+	end
+	
+	assign data1 = data1_wire;
+	assign data2 = data2_wire;
 
 endmodule

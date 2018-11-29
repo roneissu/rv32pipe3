@@ -1,8 +1,24 @@
-module imem (
-	input [15:0] addr,
-	output [31:0] data
-);
+module imem (clk, addr, data);
+	parameter SIZE = 10;
+	parameter MEM_INIT_FILE = "instructions.hex";
 
-	reg [15:0] mem_rom [15:0];
+	input							clk;
+	input			[SIZE-1:0]	addr;
+	output reg	[31:0]		data;
+
+	reg [31:0] rom [(2**SIZE)-1:0];
+	
+	initial
+	begin
+		if (MEM_INIT_FILE != "")
+			begin
+				$readmemh(MEM_INIT_FILE, rom);
+			end
+	end
+	
+	always @(posedge clk)
+	begin
+		data = rom[addr];
+	end
 
 endmodule
