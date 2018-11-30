@@ -6,7 +6,7 @@ module dmem (write_en, clk, addr, data_in, data_out);
 	input		[31:0]		data_in;
 	output	[31:0]		data_out;
 
-	reg [31:0] ram [(2**SIZE)-1:0];
+	reg [31:0] ram [0:(2**SIZE)-1];
 
 	always @(posedge clk)
 	begin

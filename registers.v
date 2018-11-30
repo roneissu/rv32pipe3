@@ -1,4 +1,4 @@
-module registers (clk, wen, addr1, addr2, addrW, dataW, data1, data2);
+module registers (clk, wen, addr1, addr2, addrW, data1, data2, dataW);
 	input					clk, wen;
 	input 	[4:0] 	addr1, addr2, addrW;
 	input 	[31:0]	dataW;
