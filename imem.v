@@ -7,7 +7,7 @@ module imem (addr, data);
 
 	reg [31:0] rom [0:(2**SIZE)-1];
 	
-	assign data = rom[addr]; // : 32'b0;
+	assign data = rom[addr];
 	
 	initial
 	begin
