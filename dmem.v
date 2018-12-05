@@ -1,9 +1,9 @@
 module dmem (write_en, clk, addr, data_in, data_out);
 	parameter SIZE = 10;
 	
-	input						write_en, clk;
-	input		[SIZE-1:0]	addr;
-	input		[31:0]		data_in;
+	input				write_en, clk;
+	input	[SIZE-1:0]	addr;
+	input	[31:0]		data_in;
 	output	[31:0]		data_out;
 
 	reg [31:0] ram [0:(2**SIZE)-1];

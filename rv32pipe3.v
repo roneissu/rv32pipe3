@@ -1,52 +1,71 @@
-module rv32pipe3 (clk, ctrl, results);
-	input clk;
-	input [0:12] ctrl;
+module rv32pipe3 (clk, reset, results);
+	input clk, reset;
 	output [31:0] results;
 	
-	wire [31:0] pc_4, pc_shft, pc_mux, inst, data1, data2, dataW, imm_ext,
-					shft, data2_mux, alu_res,
-					data_mem;
+	wire [31:0] pc_4, pc_shft, pc_mux, inst, data1, data2, dataW, imm_ext, shft, data2_mux, alu_res, data_mem;
+	wire [0:12] ctrl;
 	
 	// Fetch & Decode
 	
-	mux mux_1 (ctrl[0], pc_4, pc_shft, pc_mux);
+	// Mux_PC
+	assign pc_mux = (ctrl[0]) ? pc_shft : pc_4;
+	// End Mux_PC
 	
 	reg [31:0] pc;
 	always @(posedge clk)
 	begin
-		pc = pc_mux;
+		if (reset)
+			begin
+				pc <= 'd0;
+			end
+		else
+			begin
+				pc <= pc_mux;
+			end
 	end
 	
-	imem imem_1 (pc[9:0], inst);
+//	imem imem_1 (pc[9:0], inst);
+	imem imem_1 (clk, pc[9:0], inst);
 	
-	adder adder_1 (pc, 3'd4, pc_4);
+	// PC+4
+	assign pc_4 = pc + 'd1;
+	// End PC+4
 	
 	registers regs_1 (clk, ctrl[1], inst[19:15], inst[24:20], inst[11:7], data1, data2, dataW);
 	
 	immgen immgen_1 (ctrl[2:4], inst[31:7], imm_ext);
 	
+	controller controller_1 ({inst[30],inst[14:12],inst[6:0]}, ctrl);
+
 	//
 	
 	// Execute
 	
-	shifter shifter_1 (imm_ext, shft);
+	//shifter shifter_1 (imm_ext, shft);
+	// Shifter
+	assign shft = (imm_ext << 1);
+
+	// PC+Shift
+	assign pc_shft = pc + shft;
+	// End PC+Shift
 	
-	adder adder_2 (pc, shft, pc_shft);
+	// Mux_ALU
+	assign data2_mux = (ctrl[5]) ? imm_ext : data2;
+	// End Mux_ALU
 	
-	mux mux_2 (ctrl[5], data2, imm_ext, data2_mux);
-	
-	alu alu_1 (data1, data2_mux, ctrl[6:8], alu_res);
+	alu alu_1 (data1, data2_mux, ctrl[6:9], alu_res);
 	
 	//
 	
 	// Memory & WriteBack
 	
-	dmem dmem_1 (ctrl[9], clk, alu_res[9:0], data2, data_mem);
-	
-	mux mux_3 (ctrl[10], alu_res, data_mem, dataW);
+	dmem dmem_1 (ctrl[10], clk, alu_res[9:0], data2, data_mem);
+
+	// Mux_WB
+	assign dataW = (ctrl[11]) ? data_mem : alu_res;
+	// End Mux_WB
 	
 	//
-	
 	assign results = inst;
 
 endmodule
