@@ -1,4 +1,4 @@
-module rv32pipe3 (clk, reset, results);
+module rv32single (clk, reset, results);
 	input clk, reset;
 	output [31:0] results;
 	
