@@ -24,8 +24,8 @@ module rv32single (clk, reset, results);
 			end
 	end
 	
-//	imem imem_1 (pc[9:0], inst);
-	imem imem_1 (clk, pc[9:0], inst);
+	imem imem_1 (pc[9:0], inst);
+//	imem imem_1 (clk, pc[9:0], inst);
 	
 	// PC+4
 	assign pc_4 = pc + 'd1;

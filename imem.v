@@ -1,4 +1,4 @@
-/*module imem (addr, data);
+module imem (addr, data);
 	parameter SIZE = 10;
 	parameter MEM_INIT_FILE = "instructions.hex";
 
@@ -14,8 +14,9 @@
 		$readmemh(MEM_INIT_FILE, rom);
 	end
 
-endmodule*/
+endmodule
 
+/*
 module imem (addr, data);
 	input		[9:0]	addr;
 	output	reg	[31:0]	data;
@@ -68,4 +69,4 @@ module imem (addr, data);
 	    default : data = 'h0;
 	  endcase
 	end
-endmodule
+endmodule*/
